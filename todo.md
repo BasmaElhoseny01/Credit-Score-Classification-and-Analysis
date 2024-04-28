@@ -4,42 +4,34 @@ NB: Handling Missing Values and -ve values are handled according to teh feature 
 
 1. Each 12 Consecutive records are for one Customer during 12 months (Jan-Dec)
 
-ID:
+#### ID:
 
-Customer_ID:
+#### Customer_ID:
 
-Name:
-
+#### Name:
 1. has some missing values --> get from other records with same customer_ID
 
-Age:
-
+#### Age:
 1. -ve Values --> get value from other records(12)
 2. Some has _ (Need cleaning) (ex:30_) --> remove \_(special chars) or get from other records(12)
 3. OverFlowed Values (ex: 70120) -->
 
-SSN:
-
+#### SSN:
 1. Needs cleaning (ex:#F%$D@\*&12) --> get from other records(12)
 
-Occupation:
+#### Occupation:
+1. Missing Values or (**\_**) --> get from other records(12)
 
-1. Missing Values or (_____) --> get from other records(12)
-
-Annual Income:
-
+#### Annual Income:
 1. values with special characters such as (\_) --> Remove Special Character or Take average from other records(10)
 
-Monthly_Inhand_Salary:
-
+#### Monthly_Inhand_Salary:
 1. Missing Values --> Take average from other records(10)
 
-Num_Bank_Accounts:
-
+#### Num_Bank_Accounts:
 1. OverFlowed Values (ex:1414) --> Take Values from others(10)
 
-Num_Credit_Card:
-
+### Num_Credit_Card:
 1. OverFlowed Values (ex:1414) --> Take Values from others(10)
 
 Interest_Rate:
