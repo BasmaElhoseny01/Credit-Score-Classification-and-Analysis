@@ -11,6 +11,11 @@ class DataPreprocessing:
     
     def load_data(self):
         self.data = pd.read_csv(self.data_path)
+    
+    def save_data(self, path: str):
+        self.data.to_csv(path, index=False)
+    
+    def get_data(self) -> pd.DataFrame:
         return self.data
     
     def drop_columns(self, columns: list):
@@ -21,6 +26,14 @@ class DataPreprocessing:
         for i in range(0, len(self.data), 8):
             self.correct_customers(i, i+8)
     
+    def correct_columns_type(self):
+        # first convert to string then remove any non-numeric characters
+        self.data['Age'] = self.data['Age'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
+        self.data['Age'] = pd.to_numeric(self.data['Age'], errors='coerce')
+
+        self.data['Annual_Income'] = self.data['Annual_Income'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
+        self.data['Annual_Income'] = pd.to_numeric(self.data['Annual_Income'], errors='coerce')
+
     def correct_customers(self, start: int, end:int):
         self.correct_month(start, end)
         self.correct_occupation(start, end)
@@ -79,6 +92,7 @@ class DataPreprocessing:
     
     def correct_age(self, start: int, end:int):
 
+        # convert age to int
         try:
             # get most frequent age
             most_frequent_age = self.data['Age'][start:end].mode(dropna=True)[0]
@@ -96,8 +110,35 @@ class DataPreprocessing:
 
         for i in range(start, end):
             if pd.isnull(self.data['Age'][i]):
-                self.data['Age'][i] = most_frequent_age
+                self.data.at[i, 'Age'] = most_frequent_age
             elif self.data['Age'][i] != most_frequent_age:
-                self.data['Age'][i] = most_frequent_age
+                self.data.at[i, 'Age'] = most_frequent_age
+        return None
+    def correct_annual_income(self, start: int, end:int):
+        # replace missing values with mean of annual income
+        try:
+            # get mean of annual income
+            mean_annual_income = self.data['Annual_Income'][start:end].mean(skipna=True)
+        except:
+            # if no mean, replace with 0
+            mean_annual_income = 0
+
+        # replace missing values with mean of annual income
+        for i in range(start, end):
+            if pd.isnull(self.data['Annual_Income'][i]):
+                self.data['Annual_Income'][i] = mean_annual_income
+
         return None
         
+
+if __name__ == '__main__':
+    data_preprocessing = DataPreprocessing('dataset/train.csv')
+    data_preprocessing.load_data()
+    data_preprocessing.correct_columns_type()
+    data_preprocessing.correct_age(0, 8)
+
+    print(data_preprocessing.get_data()['Age'][0:8])
+
+
+
+# python src/data_preprocessing.py
