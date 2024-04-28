@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+from sklearn.impute import SimpleImputer
 
 class DataPreprocessing:
     def __init__(self, data_path: str) -> None:
@@ -21,5 +23,27 @@ class DataPreprocessing:
     
     def correct_customers(self, start: int, end:int) -> pd.DataFrame:
         pass
+    
+    def correct_month(self, start: int, end:int) -> pd.DataFrame:
+        # from start to end, correct the month column
+        months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        month_counter = 0
+        for i in range(start, end):
+            # check if month is correct place in the list
+            if self.data['Month'][i] != months[month_counter]:
+                self.data['month'][i] = months[month_counter]
+            month_counter += 1
+    
+    def correct_occupation(self, start: int, end:int) -> pd.DataFrame:
+        # replace missing values with most frequent occupation
 
+        # get most frequent occupation
+        most_frequent_occupation = self.data['Occupation'][start:end].mode()[0]
 
+        # replace missing values with most frequent occupation
+        for i in range(start, end):
+            if pd.isnull(self.data['Occupation'][i]):
+                self.data['Occupation'][i] = most_frequent_occupation
+            #TODO: check if this is correct maybe someone changed the occupation
+            elif self.data['Occupation'][i] != most_frequent_occupation:
+                self.data['Occupation'][i] = most_frequent_occupation
