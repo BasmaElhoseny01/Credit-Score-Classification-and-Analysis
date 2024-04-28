@@ -19,10 +19,13 @@ class DataPreprocessing:
     def correct_data(self) -> pd.DataFrame:
         # loop on every 8 rows
         for i in range(0, len(self.data), 8):
-            continue
+            self.correct_customers(i, i+8)
     
     def correct_customers(self, start: int, end:int):
-        pass
+        self.correct_month(start, end)
+        self.correct_occupation(start, end)
+        self.correct_age(start, end)
+
     
     def correct_month(self, start: int, end:int):
         '''
