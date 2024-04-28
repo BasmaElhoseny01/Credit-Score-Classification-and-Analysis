@@ -24,7 +24,7 @@ SSN:
 
 Occupation:
 
-1. Missing Values or (**\_\_\_**) --> get from other records(12)
+1. Missing Values or (_____) --> get from other records(12)
 
 Annual Income:
 

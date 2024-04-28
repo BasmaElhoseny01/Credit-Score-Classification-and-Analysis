@@ -25,6 +25,15 @@ class DataPreprocessing:
         pass
     
     def correct_month(self, start: int, end:int):
+        '''
+        Corrects the "Month" column in the DataFrame from the starting index to the ending index.
+
+        Parameters:
+        start (int): The starting index to begin correction.
+        end (int): The ending index to end correction (exclusive).
+
+        Returns: None
+        '''
         # from start to end, correct the month column
         months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         month_counter = 0
@@ -33,8 +42,19 @@ class DataPreprocessing:
             if self.data['Month'][i] != months[month_counter]:
                 self.data['month'][i] = months[month_counter]
             month_counter += 1
+
+        return None
     
     def correct_occupation(self, start: int, end:int):
+        '''
+        Replace missing values in the "Occupation" column with the most frequent occupation within the specified range.
+        
+        Parameters:
+        start (int): The starting index to begin correction.
+        end (int): The ending index to end correction (exclusive).
+        
+        Returns: None
+        '''
         # replace missing values with most frequent occupation
 
         # get most frequent occupation
@@ -47,6 +67,9 @@ class DataPreprocessing:
             #TODO: check if this is correct maybe someone changed the occupation
             elif self.data['Occupation'][i] != most_frequent_occupation:
                 self.data['Occupation'][i] = most_frequent_occupation
+
+        return None
+    
     def correct_age(self, start: int, end:int):
 
         # get most frequent occupation
@@ -54,7 +77,7 @@ class DataPreprocessing:
 
         # check if most frequent age is null
         if pd.isnull(most_frequent_age):
-            #TODP: check if this is correct, may replace with mean of age of all customers
+            #TODO: check if this is correct, may replace with mean of age of all customers
             most_frequent_age = 0 
 
         for i in range(start, end):
@@ -62,4 +85,5 @@ class DataPreprocessing:
                 self.data['Age'][i] = most_frequent_age
             elif self.data['Age'][i] != most_frequent_age:
                 self.data['Age'][i] = most_frequent_age
+        return None
         
