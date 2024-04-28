@@ -57,8 +57,12 @@ class DataPreprocessing:
         '''
         # replace missing values with most frequent occupation
 
-        # get most frequent occupation
-        most_frequent_occupation = self.data['Occupation'][start:end].mode()[0]
+        try:
+            # get most frequent occupation
+            most_frequent_occupation = self.data['Occupation'][start:end].mode(dropna=True)[0]
+        except:
+            # if no mode, replace with 'Other'
+            most_frequent_occupation = '_______'
 
         # replace missing values with most frequent occupation
         for i in range(start, end):
@@ -72,13 +76,20 @@ class DataPreprocessing:
     
     def correct_age(self, start: int, end:int):
 
-        # get most frequent occupation
-        most_frequent_age = self.data['Age'][start:end].mode()[0]
+        try:
+            # get most frequent age
+            most_frequent_age = self.data['Age'][start:end].mode(dropna=True)[0]
 
-        # check if most frequent age is null
-        if pd.isnull(most_frequent_age):
+            if most_frequent_age < 0:
+                # try second most frequent age if exists
+                if len(self.data['Age'][start:end].mode(dropna=True)) > 1:
+                    most_frequent_age = self.data['Age'][start:end].mode(dropna=True)[1]
+                    if most_frequent_age < 0:
+                        most_frequent_age = 0
+        except:
             #TODO: check if this is correct, may replace with mean of age of all customers
-            most_frequent_age = 0 
+            # if no mode, replace with 0
+            most_frequent_age = 0
 
         for i in range(start, end):
             if pd.isnull(self.data['Age'][i]):
