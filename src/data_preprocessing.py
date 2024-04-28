@@ -38,6 +38,13 @@ class DataPreprocessing:
         self.correct_month(start, end)
         self.correct_occupation(start, end)
         self.correct_age(start, end)
+        self.correct_int_categorical('Num_Bank_Accounts', start, end)
+        self.correct_int_categorical('Num_Credit_Card', start, end)
+        self.correct_int_categorical('Num_Loan', start, end)
+        # TODO: check if this is correct , have one value per customer
+        self.correct_int_categorical('Interest_Rate', start, end)
+        self.correct_int_continuous('Annual_Income', start, end)
+        self.correct_int_continuous('Monthly_Inhand_Salary', start, end)
 
     
     def correct_month(self, start: int, end:int):
@@ -123,22 +130,7 @@ class DataPreprocessing:
             elif self.data['Age'][i] != most_frequent_age:
                 self.data.at[i, 'Age'] = most_frequent_age
         return None
-    def correct_annual_income(self, start: int, end:int):
-        # replace missing values with mean of annual income
-        try:
-            # get mean of annual income
-            mean_annual_income = self.data['Annual_Income'][start:end].mean(skipna=True)
-        except:
-            # if no mean, replace with 0
-            mean_annual_income = 0
-
-        # replace missing values with mean of annual income
-        for i in range(start, end):
-            if pd.isnull(self.data['Annual_Income'][i]):
-                self.data['Annual_Income'][i] = mean_annual_income
-
-        return None
-        
+    
     def correct_monthly_inhand_salary(self, start: int, end:int):
         '''
         Replace missing values in the "Monthly In-hand Salary" column with the mean of the column within the specified range.
@@ -156,7 +148,55 @@ class DataPreprocessing:
             if pd.isnull(self.data['Monthly_Inhand_Salary'][i]):
                 self.data['Monthly_Inhand_Salary'][i] = mean_salary
         return None
+    
+    def correct_int_categorical(self,column ,start: int, end:int):
+        '''
+        Replace missing values in the "Number of Bank Accounts" column with the mean of the column within the specified range.
+        
+        Parameters:
+        start (int): The starting index to begin correction.
+        end (int): The ending index to end correction (exclusive).
+        
+        Returns: None
+        '''
+        # replace missing values with mode of the column
+        try:
+            # get mode of the column
+            most_frequent = self.data[column][start:end].mode(dropna=True)[0]
+        except:
+            # if no mode, replace with 0
+            most_frequent = 0
 
+        for i in range(start, end):
+            if pd.isnull(self.data[column][i]):
+                self.data[column][i] = most_frequent
+            #TODO: check if this is correct, maybe someone changed the number of bank accounts
+            elif self.data[column][i] != most_frequent:
+                self.data[column][i] = most_frequent
+        return None
+    
+    def correct_int_continuous(self,column ,start: int, end:int):
+        '''
+        Replace missing values in the column with the mean of the column within the specified range.
+        
+        Parameters:
+        column (str): The column to correct.
+        start (int): The starting index to begin correction.
+        end (int): The ending index to end correction (exclusive).
+        
+        Returns: None
+        '''
+        try:
+            # replace missing values with mean of the column
+            mean = self.data[column][start:end].mean(skipna=True)
+        except:
+            # if no mean, replace with 0
+            mean = 0
+
+        for i in range(start, end):
+            if pd.isnull(self.data[column][i]):
+                self.data[column][i] = mean
+        return None    
 
 
 if __name__ == '__main__':
