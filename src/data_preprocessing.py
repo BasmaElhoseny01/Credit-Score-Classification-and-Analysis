@@ -71,6 +71,15 @@ class DataPreprocessing:
         return None
     
     def correct_age(self, start: int, end:int):
+        '''
+        Replace missing values in the "Age" column with the most frequent age within the specified range.
+        
+        Parameters:
+        start (int): The starting index to begin correction.
+        end (int): The ending index to end correction (exclusive).
+        
+        Returns: None
+        '''
 
         # get most frequent occupation
         most_frequent_age = self.data['Age'][start:end].mode()[0]
@@ -87,3 +96,27 @@ class DataPreprocessing:
                 self.data['Age'][i] = most_frequent_age
         return None
         
+    def correct_monthly_inhand_salary(self, start: int, end:int):
+        '''
+        Replace missing values in the "Monthly In-hand Salary" column with the mean of the column within the specified range.
+        
+        Parameters:
+        start (int): The starting index to begin correction.
+        end (int): The ending index to end correction (exclusive).
+        
+        Returns: None
+        '''
+        # replace missing values with mean of the column
+        mean_salary = self.data['Monthly_Inhand_Salary'][start:end].mean()
+
+        for i in range(start, end):
+            if pd.isnull(self.data['Monthly_Inhand_Salary'][i]):
+                self.data['Monthly_Inhand_Salary'][i] = mean_salary
+        return None
+
+
+
+# # Test 
+# data_preprocessing = DataPreprocessing('./dataset/train.csv')
+# data_preprocessing.load_data()
+# data_preprocessing.correct_monthly_inhand_salary(0,8)
