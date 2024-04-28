@@ -9,11 +9,11 @@ class DataPreprocessing:
     def __init__(self, data_path: str) -> None:
         self.data_path = data_path
     
-    def load_data(self) -> pd.DataFrame:
+    def load_data(self):
         self.data = pd.read_csv(self.data_path)
         return self.data
     
-    def drop_columns(self, columns: list) -> pd.DataFrame:
+    def drop_columns(self, columns: list):
         self.data = self.data.drop(columns, axis=1)
     
     def correct_data(self) -> pd.DataFrame:
@@ -21,10 +21,10 @@ class DataPreprocessing:
         for i in range(0, len(self.data), 8):
             continue
     
-    def correct_customers(self, start: int, end:int) -> pd.DataFrame:
+    def correct_customers(self, start: int, end:int):
         pass
     
-    def correct_month(self, start: int, end:int) -> pd.DataFrame:
+    def correct_month(self, start: int, end:int):
         # from start to end, correct the month column
         months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         month_counter = 0
@@ -34,7 +34,7 @@ class DataPreprocessing:
                 self.data['month'][i] = months[month_counter]
             month_counter += 1
     
-    def correct_occupation(self, start: int, end:int) -> pd.DataFrame:
+    def correct_occupation(self, start: int, end:int):
         # replace missing values with most frequent occupation
 
         # get most frequent occupation
@@ -47,3 +47,19 @@ class DataPreprocessing:
             #TODO: check if this is correct maybe someone changed the occupation
             elif self.data['Occupation'][i] != most_frequent_occupation:
                 self.data['Occupation'][i] = most_frequent_occupation
+    def correct_age(self, start: int, end:int):
+
+        # get most frequent occupation
+        most_frequent_age = self.data['Age'][start:end].mode()[0]
+
+        # check if most frequent age is null
+        if pd.isnull(most_frequent_age):
+            #TODP: check if this is correct, may replace with mean of age of all customers
+            most_frequent_age = 0 
+
+        for i in range(start, end):
+            if pd.isnull(self.data['Age'][i]):
+                self.data['Age'][i] = most_frequent_age
+            elif self.data['Age'][i] != most_frequent_age:
+                self.data['Age'][i] = most_frequent_age
+        
