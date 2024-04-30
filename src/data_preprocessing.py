@@ -195,6 +195,46 @@ class DataPreprocessing:
                 self.data['Credit_History_Age'][i] = f"{years} Years {months + i - index} Months"
                 
         return None
+    
+    def correct_delay_from_due_date(self, start: int, end:int):
+        '''
+        Replace missing values in the "Delay_from_due_date" column with the most frequent delay within the specified range.
+        
+        Parameters:
+        start (int): The starting index to begin correction.
+        end (int): The ending index to end correction (exclusive).
+        
+        Returns: None
+        '''
+        # replace missing values with most frequent delay
+        try:
+            # get most frequent delay
+            most_frequent_delay = self.data['Delay_from_due_date'][start:end].mode(dropna=True)[0]
+
+            if most_frequent_delay < 0:
+                # try second most frequent delay if exists
+                if len(self.data['Delay_from_due_date'][start:end].mode(dropna=True)) > 1:
+                    most_frequent_delay = self.data['Delay_from_due_date'][start:end].mode(dropna=True)[1]
+                    # [second most frequent is also -ve] Set to 0 if negative
+                    if most_frequent_delay < 0:
+                        most_frequent_delay = 0
+        except:
+            #TODO: check if this is correct, may replace with mean of delay of all customers
+            # if no mode, replace with 0
+            most_frequent_delay = 0
+        
+        print(most_frequent_delay)
+        
+        for i in range(start, end):
+            if pd.isnull(self.data['Delay_from_due_date'][i]):
+                # replace missing values with most frequent delay
+                self.data.loc[i,'Delay_from_due_date'] = most_frequent_delay
+            elif self.data['Delay_from_due_date'][i] < 0:
+                # if negative, set to most frequent delay
+                self.data.loc[i,'Delay_from_due_date'] = most_frequent_delay
+        print(self.data['Delay_from_due_date'][start:end])
+
+
     def correct_categorical(self,column ,start: int, end:int,default_value=0):
         '''
         Replace missing values in the "Number of Bank Accounts" column with the mean of the column within the specified range.
