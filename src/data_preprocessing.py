@@ -285,7 +285,12 @@ class DataPreprocessing:
             if pd.isnull(self.data[column][i]):
                 self.data[column][i] = mean
         return None    
-
+    def convert_Y_to_numerical(self):
+        # convert Y to numerical
+        # Method 1: Label Encoding
+        label_encoder = LabelEncoder()
+        return label_encoder.fit_transform(self.data['Credit_Score'])
+        
     def convert_catgories_to_numerical(self):
         # convert categorical columns to numerical
         # Method 2: One-Hot Encoding
