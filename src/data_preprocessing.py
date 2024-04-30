@@ -48,7 +48,7 @@ class DataPreprocessing:
         self.correct_categorical('Interest_Rate', start, end)                                       # 8 Interest_Rate
         self.correct_categorical('Num_Loan', start, end)                                            # 9 Num_Loan
         # 10 Type_of_Loan
-        # 11 Delay_from_due_date
+        self.correct_delay_from_due_date(start, end) # 11 Delay_from_due_date
         # 12 Num_of_Delayed_Payment
         # 13 Changed_Credit_Limit
         # 14 Num_Credit_Inquiries
@@ -66,7 +66,7 @@ class DataPreprocessing:
         self.correct_continuous('Amount_invested_monthly', start, end)                              # 21 Amount_invested_monthly
         # TODO: get Mode of all Data and replace with it as default value
         self.correct_categorical('Payment_Behaviour', start, end,'High_spent_Small_value_payments') # 22 Payment_Behaviour
-        self.correct_continuous('Monthly_Balance', start, end)                                      # 23 Monthly_Balance
+        self.correct_continuous('Monthly_Balance', start, end) # 23 Monthly_Balance
         
     
     def correct_month(self, start: int, end:int):
@@ -197,6 +197,46 @@ class DataPreprocessing:
                 self.data['Credit_History_Age'][i] = f"{years} Years {months + i - index} Months"
                 
         return None
+    
+    def correct_delay_from_due_date(self, start: int, end:int):
+        '''
+        Replace missing values in the "Delay_from_due_date" column with the most frequent delay within the specified range.
+        
+        Parameters:
+        start (int): The starting index to begin correction.
+        end (int): The ending index to end correction (exclusive).
+        
+        Returns: None
+        '''
+        # replace missing values with most frequent delay
+        try:
+            # get most frequent delay
+            most_frequent_delay = self.data['Delay_from_due_date'][start:end].mode(dropna=True)[0]
+
+            if most_frequent_delay < 0:
+                # try second most frequent delay if exists
+                if len(self.data['Delay_from_due_date'][start:end].mode(dropna=True)) > 1:
+                    most_frequent_delay = self.data['Delay_from_due_date'][start:end].mode(dropna=True)[1]
+                    # [second most frequent is also -ve] Set to 0 if negative
+                    if most_frequent_delay < 0:
+                        most_frequent_delay = 0
+        except:
+            #TODO: check if this is correct, may replace with mean of delay of all customers
+            # if no mode, replace with 0
+            most_frequent_delay = 0
+        
+        print(most_frequent_delay)
+        
+        for i in range(start, end):
+            if pd.isnull(self.data['Delay_from_due_date'][i]):
+                # replace missing values with most frequent delay
+                self.data.loc[i,'Delay_from_due_date'] = most_frequent_delay
+            elif self.data['Delay_from_due_date'][i] < 0:
+                # if negative, set to most frequent delay
+                self.data.loc[i,'Delay_from_due_date'] = most_frequent_delay
+        print(self.data['Delay_from_due_date'][start:end])
+
+
     def correct_categorical(self,column ,start: int, end:int,default_value=0):
         '''
         Replace missing values in the "Number of Bank Accounts" column with the mean of the column within the specified range.
@@ -271,7 +311,10 @@ if __name__ == '__main__':
     data_preprocessing.correct_columns_type()
     data_preprocessing.correct_age(0, 8)
 
-    print(data_preprocessing.get_data()['Age'][0:8])
+    data_preprocessing.correct_delay_from_due_date(0, 8)
+
+
+    # print(data_preprocessing.get_data()['Age'][0:8])
 
 
 

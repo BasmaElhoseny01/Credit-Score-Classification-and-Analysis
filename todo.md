@@ -50,11 +50,12 @@ Need to be split and converted to numerical values
 1. Missing Values --> Take Values from others(10)
 2. Not Specified [loan type] --> to be checked
 
-Delay_from_due_date:
+### Delay_from_due_date:
 
-1. negative values --> Take Average from other records(10)
+1. negative values --> Take Most frequent value from other records(8)
+2. nan: replaced by most frequent value [Not this isn't present in data but we handled it]
 
-Num_of_Delayed_Payment:
+### Num_of_Delayed_Payment:
 
 1. Missing Values -->
 2. negative values -->
