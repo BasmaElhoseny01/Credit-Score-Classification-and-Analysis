@@ -35,78 +35,37 @@ class DataPreprocessing:
         self.data['Annual_Income'] = pd.to_numeric(self.data['Annual_Income'], errors='coerce')
 
     def correct_customers(self, start: int, end:int):
-        self.correct_month(start, end) # 1 Month
-        self.correct_age(start, end) # 2 Age
-        self.correct_occupation(start, end) # 3 Occupation
-
-        self.correct_continuous('Annual_Income', start, end)    # 4 Annual_Income
-        self.correct_continuous('Monthly_Inhand_Salary', start, end) # 5 Monthly_Inhand_Salary
-        self.correct_categorical('Num_Bank_Accounts', start, end) # 6 Num_Bank_Accounts
-        self.correct_categorical('Num_Credit_Card', start, end) # 7 Num_Credit_Card
+        self.correct_month(start, end)                                                              # 1 Month
+        self.correct_age(start, end)                                                                # 2 Age
+        self.correct_occupation(start, end)                                                         # 3 Occupation
+        self.correct_continuous('Annual_Income', start, end)                                        # 4 Annual_Income
+        self.correct_continuous('Monthly_Inhand_Salary', start, end)                                # 5 Monthly_Inhand_Salary
+        self.correct_categorical('Num_Bank_Accounts', start, end)                                   # 6 Num_Bank_Accounts
+        self.correct_categorical('Num_Credit_Card', start, end)                                     # 7 Num_Credit_Card
         # TODO: check if this is correct , have one value per customer
-        self.correct_categorical('Interest_Rate', start, end) # 8 Interest_Rate
-        self.correct_categorical('Num_Loan', start, end) # 9 Num_Loan
+        self.correct_categorical('Interest_Rate', start, end)                                       # 8 Interest_Rate
+        self.correct_categorical('Num_Loan', start, end)                                            # 9 Num_Loan
         # 10 Type_of_Loan
         self.correct_delay_from_due_date(start, end) # 11 Delay_from_due_date
         # 12 Num_of_Delayed_Payment
         # 13 Changed_Credit_Limit
         # 14 Num_Credit_Inquiries
         # TODO: get Mode of all Data and replace with it as default value
-        self.correct_categorical('Credit_Mix', start, end,'Standard') # 15 Credit_Mix
+        self.correct_categorical('Credit_Mix', start, end,'Standard')                               # 15 Credit_Mix
         # TODO: check it's float column
-        self.correct_continuous('Outstanding_Debt', start, end) # 16 Outstanding_Debt
+        self.correct_continuous('Outstanding_Debt', start, end)                                     # 16 Outstanding_Debt
         # TODO: check it's float column
-        self.correct_continuous('Credit_Utilization_Ratio', start, end) # 17 Credit_Utilization_Ratio
-        # 18 Credit_History_Age
+        self.correct_continuous('Credit_Utilization_Ratio', start, end)                             # 17 Credit_Utilization_Ratio
+        self.correct_Credit_History_Age(start, end)                                                 # 18 Credit_History_Age
         # TODO: get Mode of all Data and replace with it as default value
-        self.correct_categorical('Payment_of_Min_Amount', start, end, 'No') # 19 Payment_of_Min_Amount
-        # 20 Total_EMI_per_month
+        self.correct_categorical('Payment_of_Min_Amount', start, end, 'No')                         # 19 Payment_of_Min_Amount
+        self.correct_continuous('Total_EMI_per_month', start, end)                                  # 20 Total_EMI_per_month
         # TODO: check it's float column
-        self.correct_continuous('Amount_invested_monthly', start, end) # 21 Amount_invested_monthly
+        self.correct_continuous('Amount_invested_monthly', start, end)                              # 21 Amount_invested_monthly
         # TODO: get Mode of all Data and replace with it as default value
         self.correct_categorical('Payment_Behaviour', start, end,'High_spent_Small_value_payments') # 22 Payment_Behaviour
         self.correct_continuous('Monthly_Balance', start, end) # 23 Monthly_Balance
-    
-
-    def correct_delay_from_due_date(self, start: int, end:int):
-        '''
-        Replace missing values in the "Delay_from_due_date" column with the most frequent delay within the specified range.
         
-        Parameters:
-        start (int): The starting index to begin correction.
-        end (int): The ending index to end correction (exclusive).
-        
-        Returns: None
-        '''
-        # replace missing values with most frequent delay
-        try:
-            # get most frequent delay
-            most_frequent_delay = self.data['Delay_from_due_date'][start:end].mode(dropna=True)[0]
-
-            if most_frequent_delay < 0:
-                # try second most frequent delay if exists
-                if len(self.data['Delay_from_due_date'][start:end].mode(dropna=True)) > 1:
-                    most_frequent_delay = self.data['Delay_from_due_date'][start:end].mode(dropna=True)[1]
-                    # [second most frequent is also -ve] Set to 0 if negative
-                    if most_frequent_delay < 0:
-                        most_frequent_delay = 0
-        except:
-            #TODO: check if this is correct, may replace with mean of delay of all customers
-            # if no mode, replace with 0
-            most_frequent_delay = 0
-        
-        print(most_frequent_delay)
-        
-        for i in range(start, end):
-            if pd.isnull(self.data['Delay_from_due_date'][i]):
-                # replace missing values with most frequent delay
-                self.data.loc[i,'Delay_from_due_date'] = most_frequent_delay
-            elif self.data['Delay_from_due_date'][i] < 0:
-                # if negative, set to most frequent delay
-                self.data.loc[i,'Delay_from_due_date'] = most_frequent_delay
-        print(self.data['Delay_from_due_date'][start:end])
-
-
     
     def correct_month(self, start: int, end:int):
         '''
@@ -210,6 +169,32 @@ class DataPreprocessing:
                 self.data['Monthly_Inhand_Salary'][i] = mean_salary
         return None
     
+    def correct_Credit_History_Age(self, start: int, end:int):
+        '''
+        Replace missing values in the "Credit History Age" column with the mean of the column within the specified range.
+        
+        Parameters:
+        start (int): The starting index to begin correction.
+        end (int): The ending index to end correction (exclusive).
+        
+        Returns: None
+        '''
+        years = 0
+        months = 0
+        index = 0
+        for i in range(start, end):
+            if "Years" in self.data['Credit_History_Age'][i]:
+                # get the number of years
+                years = int(self.data['Credit_History_Age'][i].split()[0])
+                months = int(self.data['Credit_History_Age'][i].split()[3]) 
+                index = i
+                break
+        
+        for i in range(start, end):
+            if self.data['Credit_History_Age'][i] == "NA" or pd.isnull(self.data['Credit_History_Age'][i]):
+                self.data['Credit_History_Age'][i] = f"{years} Years {months + i - index} Months"
+                
+        return None
     def correct_categorical(self,column ,start: int, end:int,default_value=0):
         '''
         Replace missing values in the "Number of Bank Accounts" column with the mean of the column within the specified range.
