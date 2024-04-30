@@ -61,11 +61,9 @@ Need to be split and converted to numerical values
 2. negative values -->
 3. Values with special characters such as (\_) -->
 
-Changed_Credit_Limit:
+### Changed_Credit_Limit:
 
-1. Missing Values -->
-2. negative values -->
-3. Values with special characters such as (\_) -->
+1. Missing Values --> Mean
 
 Num_Credit_Inquiries:
 
