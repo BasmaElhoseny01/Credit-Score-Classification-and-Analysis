@@ -95,16 +95,16 @@ class DataPreprocessing:
             # if no mode, replace with 0
             most_frequent_delay = 0
         
-        # print(most_frequent_delay)
+        print(most_frequent_delay)
         
         for i in range(start, end):
             if pd.isnull(self.data['Delay_from_due_date'][i]):
                 # replace missing values with most frequent delay
-                self.data['Delay_from_due_date'][i] = most_frequent_delay
+                self.data.loc[i,'Delay_from_due_date'] = most_frequent_delay
             elif self.data['Delay_from_due_date'][i] < 0:
                 # if negative, set to most frequent delay
-                self.data['Delay_from_due_date'][i] = most_frequent_delay
-        # print(self.data['Delay_from_due_date'][start:end])
+                self.data.loc[i,'Delay_from_due_date'] = most_frequent_delay
+        print(self.data['Delay_from_due_date'][start:end])
 
 
     
