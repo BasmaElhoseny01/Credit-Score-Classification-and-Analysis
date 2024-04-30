@@ -4,6 +4,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.compose import ColumnTransformer
 
 class DataPreprocessing:
     def __init__(self, data_path: str) -> None:
@@ -386,7 +388,25 @@ class DataPreprocessing:
                 self.data.at[i,column] = mean
         return None    
 
+    def convert_catgories_to_numerical(self):
+        # convert categorical columns to numerical
+        # Method 2: One-Hot Encoding
 
+        # Columns to transform (same as used during training)
+        categorical_cols = ['Occupation', 'Interest_Rate', 'Credit_Mix', 'Payment_of_Min_Amount', 'Payment_Behaviour']
+
+        # Columns to leave unchanged (same as used during training)
+        continous_cols = [ 'Age','Num_Bank_Accounts','Num_Loan','Interest_Rate','Num_Credit_Card','Annual_Income', 'Monthly_Inhand_Salary', 'Outstanding_Debt', 'Credit_Utilization_Ratio', 'Total_EMI_per_month', 'Amount_invested_monthly', 'Monthly_Balance']
+
+        # Define the same ColumnTransformer from training
+        self.preprocessor = ColumnTransformer(
+            transformers=[
+                ('num', StandardScaler(), continous_cols),  # Scale numerical columns
+                ('cat', OneHotEncoder(), categorical_cols)  # One-hot encode categorical columns
+            ],
+            remainder='passthrough'  # Leave other columns unchanged
+        )
+        return self.preprocessor.fit_transform(self.data)
 if __name__ == '__main__':
     data_preprocessing = DataPreprocessing('dataset/train.csv')
     data_preprocessing.load_data()
