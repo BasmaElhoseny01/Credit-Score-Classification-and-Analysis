@@ -412,6 +412,7 @@ class DataPreprocessing:
             remainder='passthrough'  # Leave other columns unchanged
         )
         return self.preprocessor.fit_transform(self.data)
+    
 if __name__ == '__main__':
     data_preprocessing = DataPreprocessing('dataset/train.csv')
     data_preprocessing.load_data()
