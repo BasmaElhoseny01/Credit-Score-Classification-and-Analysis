@@ -398,15 +398,30 @@ class DataPreprocessing:
         # Method 2: One-Hot Encoding
 
         # Columns to transform (same as used during training)
-        categorical_cols = ['Occupation', 'Interest_Rate', 'Credit_Mix', 'Payment_of_Min_Amount', 'Payment_Behaviour']
+        categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour']
 
         # Columns to leave unchanged (same as used during training)
-        continous_cols = [ 'Age','Num_Bank_Accounts','Num_Loan','Interest_Rate','Num_Credit_Card','Annual_Income', 'Monthly_Inhand_Salary', 'Outstanding_Debt', 'Credit_Utilization_Ratio', 'Total_EMI_per_month', 'Amount_invested_monthly', 'Monthly_Balance']
+        continuous_cols = [ 'Age',
+        'Annual_Income',
+        'Monthly_Inhand_Salary', 
+        'Num_Bank_Accounts',
+        'Num_Credit_Card',
+        'Interest_Rate',
+        'Num_of_Loan',
+        'Delay_from_due_date',
+        'Num_of_Delayed_Payment',
+        'Changed_Credit_Limit',
+        'Num_Credit_Inquiries',
+        'Outstanding_Debt',
+        'Credit_Utilization_Ratio',
+        'Total_EMI_per_month',
+        'Amount_invested_monthly',
+        'Monthly_Balance']
 
         # Define the same ColumnTransformer from training
         self.preprocessor = ColumnTransformer(
             transformers=[
-                ('num', StandardScaler(), continous_cols),  # Scale numerical columns
+                ('num', StandardScaler(), continuous_cols),  # Scale numerical columns
                 ('cat', OneHotEncoder(), categorical_cols)  # One-hot encode categorical columns
             ],
             remainder='passthrough'  # Leave other columns unchanged
@@ -417,7 +432,7 @@ if __name__ == '__main__':
     data_preprocessing = DataPreprocessing('dataset/train.csv')
     data_preprocessing.load_data()
 
-    data_preprocessing.drop_columns(['ID','Customer_ID','Name','SSN','Month','Credit_History_Age'])
+    data_preprocessing.drop_columns(['ID','Customer_ID','Name','SSN','Month','Credit_History_Age','Type_of_Loan'])
 
     data_preprocessing.correct_columns_type()
 
