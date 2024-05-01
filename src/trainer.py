@@ -8,12 +8,31 @@ import pandas as pd
 class Trainer:
     def __init__(self, model):
         self.model = model
-    def split_data(self, X, y, test_size=0.2, random_state=42):
+    def split_data(self, X, y, test_size=0.15, random_state=42):
         # split data into train and test set
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
     def train(self):
         # train the model
         self.model.fit(self.X_train, self.y_train)
+
+        y_pred = self.model.predict(self.X_train) 
+        # calculate accuracy
+        accuracy = np.mean(y_pred == self.y_train)
+
+        # calculate confusion matrix
+        confusion_mat = confusion_matrix(self.y_train, y_pred)
+
+        # calculate precision, recall, f1-score from confusion matrix
+        precision = np.diag(confusion_mat) / np.sum(confusion_mat, axis=0)
+        recall = np.diag(confusion_mat) / np.sum(confusion_mat, axis=1)
+        f1_score = 2 * precision * recall / (precision + recall)
+
+        print(f"Accuracy Train: {accuracy}")
+        print(f"Confusion matrix: {confusion_mat}")
+        print(f"Precision: {precision}")
+        print(f"Recall: {recall}")
+        print(f"F1 score: {f1_score}")
+
     def evaluate(self):
         # evaluate the model
         y_pred = self.model.predict(self.X_test)  
@@ -29,7 +48,7 @@ class Trainer:
         recall = np.diag(confusion_mat) / np.sum(confusion_mat, axis=1)
         f1_score = 2 * precision * recall / (precision + recall)
 
-        print(f"Accuracy: {accuracy}")
+        print(f"Accuracy Test: {accuracy}")
         print(f"Confusion matrix: {confusion_mat}")
         print(f"Precision: {precision}")
         print(f"Recall: {recall}")

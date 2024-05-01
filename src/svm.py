@@ -5,11 +5,12 @@ from trainer import Trainer
 import pandas as pd
 import numpy as np
 import pickle
+from data_preprocessing import DataPreprocessing
 
 class SVMTrainer(Trainer):
-    def __init__(self, C=1.0, kernel='rbf', degree=3, gamma='scale'):
+    def __init__(self, C=4.0, kernel='rbf', degree=4, gamma='scale', max_iter=1000):
         # initialize the model
-        model = SVC(C=C, kernel=kernel, degree=degree, gamma=gamma)
+        model = SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, max_iter=max_iter)
         super().__init__(model)
 
     def evaluate(self):
@@ -46,7 +47,7 @@ class SVMTrainer(Trainer):
         # grid search for hyperparameters
         hyperparameters = {
             'C': [0.1, 1, 10, 100],
-            'kernel': ['linear', 'rbf', 'poly', 'sigmoid'],
+            'kernel': [ 'rbf', 'poly'],
             'degree': [3, 4, 5],
             'gamma': ['scale', 'auto']
         }
@@ -63,4 +64,15 @@ class SVMTrainer(Trainer):
 
 # Path: src/main.py
 
-# load dataset
+if __name__ == "__main__":
+    # load the data
+    data_preprocessing = DataPreprocessing('../dataset/train_preprocessed.csv')
+    data_preprocessing.load_data()
+    y = data_preprocessing.convert_Y_to_numerical()
+    data_preprocessing.drop_columns(['Credit_Score'])
+    X = data_preprocessing.convert_catgories_to_numerical()
+
+    svm_trainer = SVMTrainer()
+    svm_trainer.split_data(X, y)
+    svm_trainer.train()
+    svm_trainer.evaluate()

@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
@@ -466,6 +467,42 @@ class DataPreprocessing:
             remainder='passthrough'  # Leave other columns unchanged
         )
         return self.preprocessor.fit_transform(self.data)
+    
+    def convert_catgories_to_numerical2(self):
+        # convert categorical columns to numerical
+        # Method 2: One-Hot Encoding
+
+        # Columns to transform (same as used during training)
+        categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour']
+
+        # Columns to leave unchanged (same as used during training)
+        continuous_cols = [ 'Age',
+        'Annual_Income',
+        'Monthly_Inhand_Salary', 
+        'Num_Bank_Accounts',
+        'Num_Credit_Card',
+        'Interest_Rate',
+        'Num_of_Loan',
+        'Delay_from_due_date',
+        'Num_of_Delayed_Payment',
+        'Changed_Credit_Limit',
+        'Num_Credit_Inquiries',
+        'Outstanding_Debt',
+        'Credit_Utilization_Ratio',
+        'Total_EMI_per_month',
+        'Amount_invested_monthly',
+        'Monthly_Balance']
+
+        # Label encode categorical columns
+        for col in categorical_cols:
+            label_encoder = LabelEncoder()
+            self.data[col] = label_encoder.fit_transform(self.data[col])
+
+        # Standardize numerical columns
+        scaler = StandardScaler()
+        self.data[continuous_cols] = scaler.fit_transform(self.data[continuous_cols])
+        return self.data.iloc[:,:]
+    
     
 if __name__ == '__main__':
     data_preprocessing = DataPreprocessing('dataset/train.csv')
