@@ -12,9 +12,9 @@ class SVMTrainer(Trainer):
         model = SVC(C=C, kernel=kernel, degree=degree, gamma=gamma)
         super().__init__(model)
 
-    def evaluate(self,X,y):
+    def evaluate(self):
         # evaluate the model
-        super().evaluate(X,y)
+        super().evaluate()
 
     def train(self):
         # train the model

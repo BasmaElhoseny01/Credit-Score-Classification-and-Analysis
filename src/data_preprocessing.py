@@ -30,6 +30,38 @@ class DataPreprocessing:
             # print progress bar
             print(f"\rProgress: {i+8}/{len(self.data)}", end="")
 
+        # change the type of the columns
+        # int
+        self.change_type('Num_Bank_Accounts', 'int')
+        self.change_type('Num_Credit_Card', 'int')
+        self.change_type('Interest_Rate', 'int')
+        self.change_type('Num_of_Loan', 'int')
+        self.change_type('Num_Credit_Inquiries', 'int')
+        self.change_type('Num_of_Delayed_Payment', 'int')
+        self.change_type('Age', 'int')
+        self.change_type('Delay_from_due_date', 'int')
+        # float
+        self.change_type('Annual_Income', 'float')
+        self.change_type('Monthly_Inhand_Salary', 'float')
+        self.change_type('Changed_Credit_Limit', 'float')
+        self.change_type('Outstanding_Debt', 'float')
+        self.change_type('Credit_Utilization_Ratio', 'float')
+        self.change_type('Total_EMI_per_month', 'float')
+        self.change_type('Amount_invested_monthly', 'float')
+        self.change_type('Monthly_Balance', 'float')
+        # categorical
+        self.change_type('Occupation', 'category')
+        self.change_type('Credit_Mix', 'category')
+        self.change_type('Payment_of_Min_Amount', 'category')
+        self.change_type('Payment_Behaviour', 'category')
+        self.change_type('Credit_Score', 'category')
+
+
+        
+        
+
+    def change_type(self, column: str, new_type: str):
+        self.data[column] = self.data[column].astype(new_type)
     
     def correct_columns_type(self):
         # first convert to string then remove any non-numeric characters
@@ -39,12 +71,17 @@ class DataPreprocessing:
         self.data['Annual_Income'] = self.data['Annual_Income'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
         self.data['Annual_Income'] = pd.to_numeric(self.data['Annual_Income'], errors='coerce')
 
+        self.data['Num_of_Loan'] = self.data['Num_of_Loan'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
+        self.data['Num_of_Loan'] = pd.to_numeric(self.data['Num_of_Loan'], errors='coerce')
 
         self.data['Changed_Credit_Limit'] = self.data['Changed_Credit_Limit'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
         self.data['Changed_Credit_Limit'] = pd.to_numeric(self.data['Changed_Credit_Limit'], errors='coerce')
 
         self.data['Amount_invested_monthly'] = self.data['Amount_invested_monthly'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
         self.data['Amount_invested_monthly'] = pd.to_numeric(self.data['Amount_invested_monthly'], errors='coerce')
+
+        self.data['Monthly_Balance'] = self.data['Monthly_Balance'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
+        self.data['Monthly_Balance'] = pd.to_numeric(self.data['Monthly_Balance'], errors='coerce')
 
 
         # self.data['Type_of_Loan'] = self.data['Type_of_Loan'].astype(str).str.replace(r'and', '', regex=True)
@@ -53,8 +90,10 @@ class DataPreprocessing:
 
         self.data['Num_of_Delayed_Payment'] = self.data['Num_of_Delayed_Payment'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
         self.data['Num_of_Delayed_Payment'] = pd.to_numeric(self.data['Num_of_Delayed_Payment'], errors='coerce')
-
-
+        
+        self.data['Outstanding_Debt'] = self.data['Outstanding_Debt'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
+        self.data['Outstanding_Debt'] = pd.to_numeric(self.data['Outstanding_Debt'], errors='coerce')
+        
 
     def correct_customers(self, start: int, end:int):
         # self.correct_month(start, end)                                                              # 1 Month

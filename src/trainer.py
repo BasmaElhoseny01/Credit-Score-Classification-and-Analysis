@@ -14,15 +14,15 @@ class Trainer:
     def train(self):
         # train the model
         self.model.fit(self.X_train, self.y_train)
-    def evaluate(self, X,y):
+    def evaluate(self):
         # evaluate the model
-        y_pred = self.model.predict(X)  
+        y_pred = self.model.predict(self.X_test)  
 
         # calculate accuracy
-        accuracy = np.mean(y_pred == y)
+        accuracy = np.mean(y_pred == self.y_test)
 
         # calculate confusion matrix
-        confusion_mat = confusion_matrix(y, y_pred)
+        confusion_mat = confusion_matrix(self.y_test, y_pred)
 
         # calculate precision, recall, f1-score from confusion matrix
         precision = np.diag(confusion_mat) / np.sum(confusion_mat, axis=0)
