@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import sys
+
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -83,18 +85,19 @@ class DataPreprocessing:
 
         self.data['Monthly_Balance'] = self.data['Monthly_Balance'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
         self.data['Monthly_Balance'] = pd.to_numeric(self.data['Monthly_Balance'], errors='coerce')
+      
 
+        self.data['Type_of_Loan'] = self.data['Type_of_Loan'].astype(str).str.replace(r'and', '', regex=True)
+        self.data['Type_of_Loan'] = self.data['Type_of_Loan'].str.replace('-', ' ').str.lower().str.strip()
 
-        # self.data['Type_of_Loan'] = self.data['Type_of_Loan'].astype(str).str.replace(r'and', '', regex=True)
-
-        # self.data['Credit_History_Age'] = self.data['Credit_History_Age'].astype(str)
 
         self.data['Num_of_Delayed_Payment'] = self.data['Num_of_Delayed_Payment'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
         self.data['Num_of_Delayed_Payment'] = pd.to_numeric(self.data['Num_of_Delayed_Payment'], errors='coerce')
         
         self.data['Outstanding_Debt'] = self.data['Outstanding_Debt'].astype(str).str.replace(r'[^0-9\.\-]', '', regex=True)
         self.data['Outstanding_Debt'] = pd.to_numeric(self.data['Outstanding_Debt'], errors='coerce')
-        
+    
+
 
     def correct_customers(self, start: int, end:int):
         # self.correct_month(start, end)                                                              # 1 Month
@@ -438,7 +441,7 @@ class DataPreprocessing:
         # Method 2: One-Hot Encoding
 
         # Columns to transform (same as used during training)
-        categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour']
+        categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour','Type_of_Loan']
 
         # Columns to leave unchanged (same as used during training)
         continuous_cols = [ 'Age',
@@ -473,7 +476,7 @@ class DataPreprocessing:
         # Method 2: One-Hot Encoding
 
         # Columns to transform (same as used during training)
-        categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour']
+        categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour','Type_of_Loan']
 
         # Columns to leave unchanged (same as used during training)
         continuous_cols = [ 'Age',
@@ -508,29 +511,15 @@ if __name__ == '__main__':
     data_preprocessing = DataPreprocessing('dataset/train.csv')
     data_preprocessing.load_data()
 
-    data_preprocessing.drop_columns(['ID','Customer_ID','Name','SSN','Month','Credit_History_Age','Type_of_Loan'])
-
+    data_preprocessing.drop_columns(['ID','Customer_ID','Name','SSN','Month','Credit_History_Age'])
     data_preprocessing.correct_columns_type()
 
-    data_preprocessing.correct_data()
 
+    data_preprocessing.correct_data()
     data_preprocessing.save_data('dataset/train_preprocessed.csv')
 
-    # data_preprocessing.correct_age(0, 8)
+     
 
-    # data_preprocessing.correct_delay_from_due_date(0, 8)
-    # data_preprocessing.correct_num_credit_inquiries(0, 8)
-    # data_preprocessing.correct_type_of_loan(35,40)
-    # print(data_preprocessing.data['Type_of_Loan'][35:40])
-
-
-    # print(data_preprocessing.data['Num_of_Delayed_Payment'][138:145])
-    # print(data_preprocessing.correct_num_of_delayed_payment(0,8))
-
-
-
-
-    # print(data_preprocessing.get_data()['Age'][0:8])
 
 
 
