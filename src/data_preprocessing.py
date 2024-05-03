@@ -3,7 +3,7 @@ import numpy as np
 import sys
 
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler,MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.impute import SimpleImputer
@@ -25,8 +25,10 @@ class DataPreprocessing:
     
     def drop_columns(self, columns: list):
         self.data = self.data.drop(columns, axis=1)
+
     def get_columns(self) -> list:
         return self.data.columns
+    
     def count_unique_loans(self):
         unique_loans = set()  # Initialize an empty set to store unique loan types
         
@@ -542,10 +544,13 @@ class DataPreprocessing:
 
 
 
-    def convert_Y_to_numerical(self):
+    def convert_Y_to_numerical(self,return_classes=False):
         # convert Y to numerical
         # Method 1: Label Encoding
         label_encoder = LabelEncoder()
+        if return_classes:
+            return label_encoder.fit_transform(self.data['Credit_Score']),label_encoder.classes_
+        
         return label_encoder.fit_transform(self.data['Credit_Score'])
         
     def convert_catgories_to_numerical(self):
@@ -583,7 +588,7 @@ class DataPreprocessing:
         )
         return self.preprocessor.fit_transform(self.data)
     
-    def convert_catgories_to_numerical2(self):
+    def convert_catgories_to_numerical2(self,stop_standarization=False):
         # convert categorical columns to numerical
         # Method 2: One-Hot Encoding
 
@@ -614,9 +619,46 @@ class DataPreprocessing:
             self.data[col] = label_encoder.fit_transform(self.data[col])
 
         # Standardize numerical columns
-        scaler = StandardScaler()
-        self.data[continuous_cols] = scaler.fit_transform(self.data[continuous_cols])
+        if not stop_standarization:
+            scaler = StandardScaler()
+            self.data[continuous_cols] = scaler.fit_transform(self.data[continuous_cols])
         return self.data.iloc[:,:]
+    
+    def convert_categories_to_one_hot_normalize_numerical(self):
+        # convert categorical columns to numerical
+        # Method 2: One-Hot Encoding
+
+        # Columns to transform (same as used during training)
+        # categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour']
+
+        # Columns to leave unchanged (same as used during training)
+        continuous_cols = [ 'Age',
+        'Annual_Income',
+        'Monthly_Inhand_Salary', 
+        'Num_Bank_Accounts',
+        'Num_Credit_Card',
+        'Interest_Rate',
+        'Num_of_Loan',
+        'Delay_from_due_date',
+        'Num_of_Delayed_Payment',
+        'Changed_Credit_Limit',
+        'Num_Credit_Inquiries',
+        'Outstanding_Debt',
+        'Credit_Utilization_Ratio',
+        'Total_EMI_per_month',
+        'Amount_invested_monthly',
+        'Monthly_Balance']
+
+        # Define the same ColumnTransformer from training
+        self.preprocessor = ColumnTransformer(
+            transformers=[
+                ('num', MinMaxScaler(),continuous_cols),  # Normalize numerical columns
+                # ('cat', OneHotEncoder(), categorical_cols)  # One-hot encode categorical columns
+            ],
+            remainder='passthrough'  # Leave other columns unchanged
+        )
+        return self.preprocessor.fit_transform(self.data)
+    
     
     
 if __name__ == '__main__':

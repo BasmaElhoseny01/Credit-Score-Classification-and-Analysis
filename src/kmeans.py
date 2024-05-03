@@ -13,7 +13,7 @@ from data_preprocessing import DataPreprocessing
 
 class KMeansTrainer():
     def __init__(self,n_clusters):
-        self.model = KMeans(n_clusters=n_clusters, init="random", random_state= 42)  
+        self.model = KMeans(n_clusters=n_clusters, init="random", random_state= 42,n_init=1,max_iter=300)  
 
     def set_data(self, X,columns):
         self.X_train = X
@@ -30,7 +30,8 @@ class KMeansTrainer():
         end_time = time.time()
         
         # Compute time taken
-        time_taken = end_time - start_time
+        print("Training Time:",end_time - start_time)
+
 
         self.centroids=self.model.cluster_centers_
         self.labels=self.model.labels_
@@ -40,7 +41,7 @@ class KMeansTrainer():
         # The silhouette score ranges from -1 to 1. A score close to 1 indicates that the data point is very similar to other data points in the cluster,
         print(f"Silhouette Score:",silhouette_score(self.X_train, self.labels))
 
-        return time_taken
+        return None
 
     def evaluate(self):
         super().evaluate()
@@ -81,8 +82,12 @@ if __name__ == "__main__":
     # Drop Target Column
     X = data_preprocessing.drop_columns(['Credit_Score'])
 
+    # Drop Category Column
+    categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour']
+    X = data_preprocessing.drop_columns(categorical_cols)
+    
     # Convert Categorical Columns to Numerical & Scale continuous columns
-    X = data_preprocessing.convert_catgories_to_numerical()
+    X = data_preprocessing.convert_categories_to_one_hot_normalize_numerical()
 
     # Trainer
     K_means_trainer = KMeansTrainer(n_clusters=5)
@@ -93,12 +98,15 @@ if __name__ == "__main__":
 
     # Start Training
     print("Training Kmeans Model")
-    train_time=K_means_trainer.train()
-    print("Training Time:",train_time)
+    K_means_trainer.train()
 
     # Save the model
-    K_means_trainer.save_model('./models/knn_sklearn.pkl')
+    K_means_trainer.save_model('./models/kmeans_sklearn.pkl')
 
     K_means_trainer.plot_clusters('Age','Annual_Income')
 
 # Path: python src/knn.py
+
+# Training Kmeans Model
+# Training Time: 0.6300568580627441
+# Silhouette Score: 0.09255414134312365
