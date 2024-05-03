@@ -71,6 +71,8 @@ class DataPreprocessing:
         self.change_type('Num_of_Delayed_Payment', 'int')
         self.change_type('Age', 'int')
         self.change_type('Delay_from_due_date', 'int')
+        for loan in self.unique_loans:
+            self.change_type(loan, 'int')
         # float
         self.change_type('Annual_Income', 'float')
         self.change_type('Monthly_Inhand_Salary', 'float')
@@ -87,6 +89,8 @@ class DataPreprocessing:
         self.change_type('Payment_Behaviour', 'category')
         self.change_type('Credit_Score', 'category')
 
+
+        # Post Processing
         self.post_processing()
         
         
