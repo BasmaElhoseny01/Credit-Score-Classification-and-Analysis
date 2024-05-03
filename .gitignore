@@ -5,6 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
+models/xgboost_model.pkl
 
 frontend/node_modules/*
 # Distribution / packaging
