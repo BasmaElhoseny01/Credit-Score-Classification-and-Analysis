@@ -36,11 +36,14 @@ class DataPreprocessing:
             
             # Add each loan type to the set
             for loan in loans:
+                if loan=='nan':
+                    continue
                 unique_loans.add(loan.strip())  # Remove leading/trailing whitespaces
                 
             # Print progress bar
             print(f"\rProgress: {i+1}/{len(self.data)}", end="")
-        
+
+        unique_loans = [loan.strip() for loan in unique_loans]
         # Print the count of unique loans
         print(f"\nNumber of unique loans: {len(unique_loans)}")
 
@@ -332,13 +335,13 @@ class DataPreprocessing:
         for i in range(start, end):
             # Split the string into a list of loan types
             loans = self.data.at[i, 'Type_of_Loan'].split(',')
+            loans = [loan.strip() for loan in loans]
             
-            # Add each loan type to the set
-            for loan in loans:
-                if loan.strip() in self.unique_loans:
+            for loan in self.unique_loans:
+                if loan.strip() in loans:
                     self.data.at[i, loan.strip()] = 1
                 else:
-                    self.data.at[i, loan.strip()] = None
+                    self.data.at[i, loan.strip()] = 0
 
         return None
     
