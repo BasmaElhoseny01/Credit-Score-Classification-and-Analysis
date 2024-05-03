@@ -1,6 +1,7 @@
 from sklearn.cluster import KMeans  
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import calinski_harabasz_score
+import matplotlib.pyplot as plt
 
 
 import pickle
@@ -14,8 +15,9 @@ class KMeansTrainer():
     def __init__(self,n_clusters):
         self.model = KMeans(n_clusters=n_clusters, init="random", random_state= 42)  
 
-    def set_data(self, X):
+    def set_data(self, X,columns):
         self.X_train = X
+        self.columns = columns
 
     def train(self):
         # Compute Train time
@@ -42,6 +44,22 @@ class KMeansTrainer():
 
     def evaluate(self):
         super().evaluate()
+
+
+    def plot_clusters(self,feature1,feature2):
+        # Get the indices of the features
+        f1_index = self.columns.get_loc(feature1)
+        f2_index = self.columns.get_loc(feature2)
+        
+        # Plot the clusters
+        plt.scatter(self.X_train[:, f1_index], self.X_train[:, f2_index], c=self.labels, cmap='viridis')
+        plt.scatter(self.centroids[:, f1_index], self.centroids[:, f2_index], marker='x', s=100, c='red', label='Centroids')
+        plt.title('Cluster Plot')
+        plt.xlabel(feature1)
+        plt.ylabel(feature2)
+        plt.legend()
+        plt.show()
+        
 
     def save_model(self,path):
         # save the model
@@ -70,15 +88,17 @@ if __name__ == "__main__":
     K_means_trainer = KMeansTrainer(n_clusters=5)
 
     # Set Data
-    K_means_trainer.set_data(X)
+    K_means_trainer.set_data(X,columns=data_preprocessing.get_columns())
+
 
     # Start Training
     print("Training Kmeans Model")
     train_time=K_means_trainer.train()
     print("Training Time:",train_time)
 
-
     # Save the model
     K_means_trainer.save_model('./models/knn_sklearn.pkl')
+
+    K_means_trainer.plot_clusters('Age','Annual_Income')
 
 # Path: python src/knn.py
