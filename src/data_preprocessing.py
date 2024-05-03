@@ -25,7 +25,8 @@ class DataPreprocessing:
     
     def drop_columns(self, columns: list):
         self.data = self.data.drop(columns, axis=1)
-
+    def get_columns(self) -> list:
+        return self.data.columns
     def count_unique_loans(self):
         unique_loans = set()  # Initialize an empty set to store unique loan types
         
@@ -71,6 +72,8 @@ class DataPreprocessing:
         self.change_type('Num_of_Delayed_Payment', 'int')
         self.change_type('Age', 'int')
         self.change_type('Delay_from_due_date', 'int')
+        for loan in self.unique_loans:
+            self.change_type(loan, 'int')
         # float
         self.change_type('Annual_Income', 'float')
         self.change_type('Monthly_Inhand_Salary', 'float')
@@ -87,6 +90,8 @@ class DataPreprocessing:
         self.change_type('Payment_Behaviour', 'category')
         self.change_type('Credit_Score', 'category')
 
+
+        # Post Processing
         self.post_processing()
         
         
@@ -548,7 +553,7 @@ class DataPreprocessing:
         # Method 2: One-Hot Encoding
 
         # Columns to transform (same as used during training)
-        categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour','Type_of_Loan']
+        categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour']
 
         # Columns to leave unchanged (same as used during training)
         continuous_cols = [ 'Age',
@@ -583,7 +588,7 @@ class DataPreprocessing:
         # Method 2: One-Hot Encoding
 
         # Columns to transform (same as used during training)
-        categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour','Type_of_Loan']
+        categorical_cols = ['Occupation','Credit_Mix','Payment_of_Min_Amount', 'Payment_Behaviour']
 
         # Columns to leave unchanged (same as used during training)
         continuous_cols = [ 'Age',
