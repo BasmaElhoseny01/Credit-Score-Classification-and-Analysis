@@ -7,7 +7,7 @@ import pickle
 from data_preprocessing import DataPreprocessing
 
 class RandomForestTrainer(Trainer):
-    def __init__(self, n_estimators=100, criterion='entropy', max_depth=None, max_features='auto'):
+    def __init__(self, n_estimators=1000, criterion='gini', max_depth=None, max_features='auto'):
         # initialize the model
         model = RandomForestClassifier(n_estimators=n_estimators, criterion=criterion, max_depth=max_depth, max_features=max_features)
         super().__init__(model)
@@ -59,7 +59,7 @@ class RandomForestTrainer(Trainer):
 
 
 if __name__ == "__main__":
-    data_preprocessing = DataPreprocessing('../dataset/train_preprocessed.csv')
+    data_preprocessing = DataPreprocessing('dataset/train_preprocessed.csv')
     data_preprocessing.load_data()
     y = data_preprocessing.convert_Y_to_numerical()
     data_preprocessing.drop_columns(['Credit_Score'])

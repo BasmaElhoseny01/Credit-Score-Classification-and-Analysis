@@ -87,7 +87,7 @@ class DataPreprocessing:
         self.change_type('Payment_Behaviour', 'category')
         self.change_type('Credit_Score', 'category')
 
-
+        self.post_processing()
         
         
 
@@ -490,7 +490,53 @@ class DataPreprocessing:
             if pd.isnull(self.data[column][i]):
                 self.data.at[i,column] = mean
         return None    
-    
+
+    def post_processing(self):
+
+        # handle outliers in categorical columns
+        self.data['Payment_Behaviour'] = self.data['Payment_Behaviour'].replace('!@9#%8', 'Low_spent_Small_value_payments')
+        self.data['Payment_of_Min_Amount'] = self.data['Payment_of_Min_Amount'].replace('NM', 'Yes')
+        self.data['Credit_Mix'] = self.data['Credit_Mix'].replace('_', 'Standard')
+        self.data['Occupation'] = self.data['Occupation'].replace('_______', 'Lawyer')
+
+        # handle outliers in continuous columns
+
+        continuous_cols = [ 'Age',
+        'Annual_Income',
+        'Monthly_Inhand_Salary',
+        'Num_Bank_Accounts',
+        'Num_Credit_Card',
+        'Interest_Rate',
+        'Num_of_Loan',
+        'Delay_from_due_date',
+        'Num_of_Delayed_Payment',
+        'Changed_Credit_Limit',
+        'Num_Credit_Inquiries',
+        'Outstanding_Debt',
+        'Credit_Utilization_Ratio',
+        'Total_EMI_per_month',
+        'Amount_invested_monthly',
+        'Monthly_Balance']
+
+        for col in continuous_cols:
+            # get mean of col
+            mean = self.data[col].mean()
+            std = self.data[col].std()
+            print("\n column ",col)
+            print("mean ",mean)
+            print("std ",std)
+            
+            # get upper bound
+            upper_bound = mean + 3 * std
+            # get lower bound
+            lower_bound = mean - 3 * std
+
+            # replace outliers with mean
+            self.data[col] = np.where( self.data[col] > upper_bound , mean, self.data[col])
+            self.data[col] = np.where( self.data[col] < lower_bound , mean, self.data[col])
+
+
+
     def convert_Y_to_numerical(self):
         # convert Y to numerical
         # Method 1: Label Encoding

@@ -8,7 +8,7 @@ import pandas as pd
 class Trainer:
     def __init__(self, model):
         self.model = model
-    def split_data(self, X, y, test_size=0.15, random_state=42):
+    def split_data(self, X, y, test_size=0.15, random_state=4):
         # split data into train and test set
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
 
