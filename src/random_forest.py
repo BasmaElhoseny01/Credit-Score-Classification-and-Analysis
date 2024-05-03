@@ -14,11 +14,11 @@ class RandomForestTrainer(Trainer):
 
     def evaluate(self):
         # evaluate the model
-        super().evaluate()
+        return super().evaluate()
 
     def train(self):
         # train the model
-        super().train()
+        return super().train()
 
     def save_model(self, path):
         # save the model

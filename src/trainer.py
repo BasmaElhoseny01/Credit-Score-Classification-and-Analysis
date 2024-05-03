@@ -11,6 +11,7 @@ class Trainer:
     def split_data(self, X, y, test_size=0.15, random_state=42):
         # split data into train and test set
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+
     def train(self):
         # train the model
         self.model.fit(self.X_train, self.y_train)
@@ -33,6 +34,8 @@ class Trainer:
         print(f"Recall: {recall}")
         print(f"F1 score: {f1_score}")
 
+        return accuracy,confusion_mat,precision,recall,f1_score
+
     def evaluate(self):
         # evaluate the model
         y_pred = self.model.predict(self.X_test)  
@@ -53,6 +56,8 @@ class Trainer:
         print(f"Precision: {precision}")
         print(f"Recall: {recall}")
         print(f"F1 score: {f1_score}")
+
+        return accuracy,confusion_mat,precision,recall,f1_score
 
     def save_model(self, path):
         # save the model

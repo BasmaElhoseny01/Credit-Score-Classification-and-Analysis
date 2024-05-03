@@ -1,0 +1,15 @@
+artifact_uri: file:///d:/Big-Data-Project/src/mlruns/875328833277298238/391acde497cc4d74b94f8b7031999188/artifacts
+end_time: 1714753846560
+entry_point_name: ''
+experiment_id: '875328833277298238'
+lifecycle_stage: active
+run_id: 391acde497cc4d74b94f8b7031999188
+run_name: placid-grub-838
+run_uuid: 391acde497cc4d74b94f8b7031999188
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1714753796674
+status: 3
+tags: []
+user_id: Dell
