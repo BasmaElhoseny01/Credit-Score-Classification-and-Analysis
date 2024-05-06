@@ -1,4 +1,5 @@
 from sklearn.cluster import KMeans  
+from sklearn.manifold import TSNE
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import calinski_harabasz_score
 import matplotlib.pyplot as plt
@@ -60,7 +61,23 @@ class KMeansTrainer():
         plt.ylabel(feature2)
         plt.legend()
         plt.show()
-        
+    
+    def plot_T_SNE(self,X,y):
+
+        # Initialize t-SNE object
+        tsne = TSNE(n_components=2, random_state=42,perplexity=5)
+
+        # Fit and transform the word vectors
+        x_2d = tsne.fit_transform(X)
+
+        # Visualize
+        plt.figure(figsize=(10, 8))
+        plt.scatter(x_2d[:, 0], x_2d[:, 1], marker='.',hue=y, cmap='viridis')
+        plt.xlabel('t-SNE Dimension 1')
+        plt.ylabel('t-SNE Dimension 2')
+        plt.title('t-SNE Visualization')
+        plt.savefig('t-SNE.png')
+        plt.show()
 
     def save_model(self,path):
         # save the model
