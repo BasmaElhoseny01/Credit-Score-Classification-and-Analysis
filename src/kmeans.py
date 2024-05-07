@@ -14,7 +14,7 @@ from data_preprocessing import DataPreprocessing
 
 class KMeansTrainer():
     def __init__(self,n_clusters):
-        self.model = KMeans(n_clusters=n_clusters, init="random", random_state= 42,n_init=1,max_iter=300)  
+        self.model = KMeans(n_clusters=n_clusters, init="random", random_state= 42,n_init=1,max_iter=100)  
 
     def set_data(self, X,columns):
         self.X_train = X
@@ -22,7 +22,7 @@ class KMeansTrainer():
 
     def train(self):
         # Compute Train time
-          # Start time
+        # Start time
         start_time = time.time()
         
         self.model.fit(self.X_train)
