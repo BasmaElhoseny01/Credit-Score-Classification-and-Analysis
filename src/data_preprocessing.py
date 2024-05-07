@@ -621,7 +621,11 @@ class DataPreprocessing:
         # Standardize numerical columns
         if not stop_standarization:
             scaler = StandardScaler()
-            self.data[continuous_cols] = scaler.fit_transform(self.data[continuous_cols])
+        else:
+            scaler = MinMaxScaler()
+
+        self.data[continuous_cols] = scaler.fit_transform(self.data[continuous_cols])
+        
         return self.data.iloc[:,:]
     
     def convert_categories_to_one_hot_normalize_numerical(self):

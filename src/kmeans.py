@@ -3,7 +3,7 @@ from sklearn.manifold import TSNE
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import calinski_harabasz_score
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 import pickle
 import pandas as pd
@@ -61,22 +61,127 @@ class KMeansTrainer():
         plt.ylabel(feature2)
         plt.legend()
         plt.show()
-    
-    def plot_T_SNE(self,X,y):
 
+
+    def plot_T_SNE_2D(self, X, y, classes, centroids=None):
         # Initialize t-SNE object
-        tsne = TSNE(n_components=2, random_state=42,perplexity=5)
+        tsne = TSNE(n_components=2, random_state=42)
 
         # Fit and transform the word vectors
-        x_2d = tsne.fit_transform(X)
+        x_2d = tsne.fit_transform(X)  # (100000, 2)
 
-        # Visualize
+        # Define colors for each unique class
+        num_classes = len(classes)
+        color_list = plt.cm.tab10(np.linspace(0, 1, num_classes))
+        colors = {i: color_list[i] for i, class_label in enumerate(classes)}
+
+        # Create a single scatter plot
         plt.figure(figsize=(10, 8))
-        plt.scatter(x_2d[:, 0], x_2d[:, 1], marker='.',hue=y, cmap='viridis')
+
+        # Plot each class separately
+        for class_label in range(num_classes):
+            # Filter data for the current class
+            x_class = x_2d[y == class_label]
+
+            # Scatter plot for the current class
+            plt.scatter(x_class[:, 0], x_class[:, 1], marker='.', c=colors[class_label], label=f'Class {classes[class_label]}')
+
+            # Plot centroids if provided
+            if centroids is not None:
+                centroids_transformed = tsne.transform(centroids)
+                plt.scatter(centroids_transformed[class_label, 0], centroids_transformed[class_label, 1], marker='x', s=100, c='red', label='Centroid')
+
+        # Set labels and title
         plt.xlabel('t-SNE Dimension 1')
         plt.ylabel('t-SNE Dimension 2')
         plt.title('t-SNE Visualization')
-        plt.savefig('t-SNE.png')
+
+        # Show legend
+        plt.legend()
+
+        # Save and show the plot
+        plt.tight_layout()
+        plt.savefig('t-SNE_plot.png')
+        plt.show()
+    # def plot_T_SNE_2D(self, X, y, classes, centroids=None):
+    #     # Initialize t-SNE object
+    #     tsne = TSNE(n_components=2, random_state=42)
+
+    #     # Fit and transform the word vectors
+    #     x_2d = tsne.fit_transform(X)  # (100000, 2)
+
+    #     # Define colors for each unique class
+    #     num_classes = len(classes)
+    #     color_list = plt.cm.tab10(np.linspace(0, 1, num_classes))
+    #     colors = {i: color_list[i] for i, class_label in enumerate(classes)}
+
+
+    #     # Initialize subplots
+    #     fig, axes = plt.subplots(1, len(classes), figsize=(15, 5))
+
+    #     # Iterate over unique classes and plot them separately
+    #     for class_label, ax in zip(range(len(classes)), axes):
+    #         # Filter data for the current class
+    #         x_class = x_2d[y == class_label]
+            
+    #         # Scatter plot for the current class
+    #         ax.scatter(x_class[:, 0], x_class[:, 1], marker='.', c=colors[class_label], label=f'Class {classes[class_label]}')
+
+    #         # Plot centroids if provided
+    #         if centroids is not None:
+    #             centroids_transformed = tsne.transform(centroids)
+    #             ax.scatter(centroids_transformed[class_label, 0], centroids_transformed[class_label, 1], marker='x', s=100, c='red', label='Centroid')
+
+    #         ax.set_xlabel('t-SNE Dimension 1')
+    #         ax.set_ylabel('t-SNE Dimension 2')
+    #         ax.set_title(f't-SNE Visualization for Class {classes[class_label]}')
+    #         ax.legend()
+
+    #     plt.tight_layout()
+    #     plt.savefig('t-SNE_subplots.png')
+    #     plt.show()
+
+    def plot_T_SNE_3D(self, X, y, classes, centroids=None):
+        # Initialize t-SNE object
+        tsne = TSNE(n_components=3, random_state=42)
+
+        # Fit and transform the word vectors
+        x_3d = tsne.fit_transform(X)  # (100000, 3)
+
+        # Define colors for each unique class
+        num_classes = len(classes)
+        color_list = plt.cm.tab10(np.linspace(0, 1, num_classes))
+        colors = {i: color_list[i] for i, class_label in enumerate(classes)}
+
+        # Initialize a 3D subplot
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Plot each class separately
+        for class_label in range(num_classes):
+            # Filter data for the current class
+            x_class = x_3d[y == class_label]
+
+            # Scatter plot for the current class
+            ax.scatter(x_class[:, 0], x_class[:, 1], x_class[:, 2], marker='.', c=colors[class_label], label=f'Class {classes[class_label]}')
+
+            # Plot centroids if provided
+            if centroids is not None:
+                centroids_transformed = tsne.transform(centroids)
+                ax.scatter(centroids_transformed[class_label, 0], centroids_transformed[class_label, 1], centroids_transformed[class_label, 2], marker='x', s=100, c='red', label='Centroid')
+
+        # Set labels and title
+        ax.set_xlabel('t-SNE Dimension 1')
+        ax.set_ylabel('t-SNE Dimension 2')
+        ax.set_zlabel('t-SNE Dimension 3')
+        ax.set_title('t-SNE 3D Visualization')
+        ax.legend()
+
+
+        plt.tight_layout()
+        # plt.savefig('t-SNE_subplots.png')
+
+        # Enable interactive rotation
         plt.show()
 
     def save_model(self,path):
@@ -119,8 +224,6 @@ if __name__ == "__main__":
 
     # Save the model
     K_means_trainer.save_model('./models/kmeans_sklearn.pkl')
-
-    K_means_trainer.plot_clusters('Age','Annual_Income')
 
 # Path: python src/knn.py
 
