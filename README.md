@@ -5,18 +5,24 @@
 </p>
 
 ## <img  align= center width=80px src="giphy.gif">  Table of Content
-1. [Overview](#Overview)
-2. [Results](#Results)
-3. [Get Started](#started)
-4. [Contributors](#contributors)
-5. [License](#license)
+1. [Overview](#overview)
+2. [Pipeline](#piepline)
+3. [Built Using](#tools)
+4. [Getting Started](#started)
+5. [Contributors](#contributors)
+6. [License](#license)
+
+<!--  Overview  -->
+## <img  align= center width =60px src="https://cdn-icons-png.flaticon.com/512/8632/8632710.png"> Overview <a id="overview"></a>
+To assess the risk associated with approving a loan request from a customer, bankers rely on evaluating the customer's transactional history. We propose the development of an intelligent system that would analyze customer credit information, encompassing payment history, credit utilization, and length of credit. It would then assign a credit score to the customer, which the bank would use to determine loan approval based on a
+predefined threshold.
 
 <!--  Pipeline  -->
-## <img  align= center width =60px src="https://cdn-icons-png.flaticon.com/512/2002/2002051.png"> Pipeline
+## <img  align= center width =60px src="https://cdn-icons-png.flaticon.com/512/2002/2002051.png"> Pipeline <a id="piepline"></a>
 <img src="https://github.com/user-attachments/assets/8ac576e3-51ea-479d-89ef-34d73501598f" alt="Project's Pipeline" />
 
 <!-- Built Using -->
-## <img  align= center width =60px  height =70px src="https://media4.giphy.com/media/ux6vPam8BubuCxbW20/giphy.gif?cid=6c09b952gi267xsujaqufpqwuzeqhbi88q0ohj83jwv6dpls&ep=v1_stickers_related&rid=giphy.gif&ct=s"> Built Using 
+## <img  align= center width =60px  height =70px src="https://media4.giphy.com/media/ux6vPam8BubuCxbW20/giphy.gif?cid=6c09b952gi267xsujaqufpqwuzeqhbi88q0ohj83jwv6dpls&ep=v1_stickers_related&rid=giphy.gif&ct=s"> Built Using <a id="tools"></a>
 <table>
   <tr>
         <td align="center"><img height="60" src ="https://logos-world.net/wp-content/uploads/2021/10/Python-Symbol.png"/></td>
@@ -33,6 +39,19 @@
 </table>
 
 
+<!-- Getting Started -->
+## <img align="center" width="60px" height="60px" src="https://media3.giphy.com/media/wuZWV7keWqi2jJGzdB/giphy.gif?cid=6c09b952wp4ev7jtywg3j6tt7ec7vr3piiwql2vhrlsgydyz&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s"> Getting Started <a id="started"></a>
+
+1. **Clone the Repository**
+    ```bash
+    git clone https://github.com/BasmaElhoseny01/Credit-Score-Classification-and-Analysis.git
+    ```
+
+2. **Install Dependencies**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
 <!-- Contributors -->
 ## <img  align= center width=50px height=50px src="https://media1.giphy.com/media/WFZvB7VIXBgiz3oDXE/giphy.gif?cid=6c09b952tmewuarqtlyfot8t8i0kh6ov6vrypnwdrihlsshb&rid=giphy.gif&ct=s"> Contributors <a id = "contributors"></a>
 
@@ -46,5 +65,5 @@
   </tr>
 </table>
 
-## <img  align= center height=50px src="https://alhidaayahacademy.sch.ng/wp-content/uploads/2016/04/LE_certificate_gr.gif">  License
+## <img  align= center height=50px src="https://alhidaayahacademy.sch.ng/wp-content/uploads/2016/04/LE_certificate_gr.gif"> License <a id="license"></a>
 This software is licensed under the [MIT License](https://github.com/BasmaElhoseny01/Credit-Score-Classification-and-Analysis/blob/main/LICENSE). © Basma Elhoseny.
